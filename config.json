@@ -1,0 +1,12 @@
+{
+    "database": {
+        "host": "localhost",
+        "port": 5432,
+        "username": "user",
+        "password": "password"
+    },
+    "api": {
+        "endpoint": "https://api.example.com",
+        "token": "your_api_token"
+    }
+}
