@@ -146,3 +146,51 @@ class ArticleDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAdminUserOrReadOnly]
 ########################################################################
 
+### 视图集类把前面章节写的列表、详情等逻辑都集成到一起，并且提供了默认的增删改查的实现。
+from rest_framework import viewsets
+from article.serializers import ArticleSerializer
+from rest_framework import filters
+
+class ArticleViewSet(viewsets.ModelViewSet):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
+    permission_classes = [IsAdminUserOrReadOnly]
+
+    # 如果要实现更常用的模糊匹配，就可以使用 SearchFilter 做搜索后端：
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title']
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+    # def get_serializer_class(self):
+    ### 對應到不同的權限
+    #     if self.action == 'list':
+    #         return SomeSerializer
+    #     else:
+    #         return AnotherSerializer
+
+    # 我们可以覆写 get_queryset() 方法来实现过滤：
+    def get_queryset(self):
+        queryset = self.queryset
+        username = self.request.query_params.get('username', None)
+        
+        if username is not None:
+            queryset = queryset.filter(author__username = username)
+
+        return queryset
+
+# 视图集
+from article.models import Category
+from article.serializers import CategorySerializer, CategoryDetailSerializer
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    """ 分類視圖集 """
+    queryset = Category.objects.all()
+    serializer_class =CategorySerializer
+    permission_classes = [IsAdminUserOrReadOnly]
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return CategorySerializer
+        else:
+            return CategoryDetailSerializer
