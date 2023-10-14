@@ -194,3 +194,13 @@ class CategoryViewSet(viewsets.ModelViewSet):
             return CategorySerializer
         else:
             return CategoryDetailSerializer
+        
+from article.models import Tag
+from article.serializers import TagSerializer
+
+class TagViewSet(viewsets.ModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+    permission_classes = [IsAdminUserOrReadOnly]
+
+

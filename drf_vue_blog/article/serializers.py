@@ -60,10 +60,40 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
 
+### 新增tag
+from article.models import Tag
+class TagSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Tag
+        fields = '__all__'
+
 class ArticleSerializer(serializers.HyperlinkedModelSerializer):
     author = UserDescSerializer(read_only=True)
     category = CategorySerializer(read_only = True)
     category_id = serializers.IntegerField(write_only=True, allow_null=True, required=False)
+    # tag 字段
+    tags = serializers.SlugRelatedField(
+        queryset=Tag.objects.all(),
+        many=True,
+        required=False,
+        slug_field='text'
+    )
+
+    # 覆写方法，如果输入的标签不存在则创建它
+    """
+    to_internal_value() 方法原本作用是将请求中的原始 Json 数据转化为 Python 表示形式（期间还会对字段有效性做初步检查）。
+    它的执行时间比默认验证器的字段检查更早, 因此有机会在此方法中将需要的数据创建好, mkkm然后等待检查的降临。isinstance() 确定标签数据是列表
+    ，才会循环并创建新数据。
+    """
+    def to_internal_value(self, data):
+        tags_data = data.get('tags')
+
+        if isinstance(tags_data):
+            for text in tags_data:
+                if not Tag.objects.filter(text=text).exists():
+                    Tag.objects.create(text=text)
+            
+        return super().to_internal_value(data)
 
     def validate_category_id(self, value):
         if not Category.objects.filter(id=value).exists() and value is not None:
@@ -97,3 +127,4 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
             'created',
             'articles',
         ]
+
