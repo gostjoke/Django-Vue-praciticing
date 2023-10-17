@@ -1,6 +1,10 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from markdown import Markdown
+
+class Avatar(models.Model):
+    content = models.ImageField(upload_to='avatar/%Y%m%d')
 
 class Category(models.Model):
     """文章分类"""
@@ -24,6 +28,16 @@ class Tag(models.Model):
 
 # 博客文章 model
 class Article(models.Model): # 新增
+    
+    # 標題圖
+    avatar = models.ForeignKey(
+        Avatar, 
+        null=True, 
+        blank=True, 
+        on_delete=models.SET_NULL, 
+        related_name='articles',
+    )
+
     # 標籤
     tags = models.ManyToManyField(
         Tag,
@@ -54,6 +68,17 @@ class Article(models.Model): # 新增
     def __str__(self):
         return self.title
     
+    def get_md(self):
+        md = Markdown(
+            extensions=[
+                'markdown.extensions.extra',
+                'markdown.extensions.codehilite',
+                'markdown.extensions.toc'
+            ]
+        )
+        md_body = md.convert(self.body)
+        return md_body, md.toc
+
     class Meta:
     ## 最后为了让分页更准确，给模型类规定好查询排序：
         ordering = ['-created']

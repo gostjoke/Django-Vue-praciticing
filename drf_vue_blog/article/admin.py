@@ -1,11 +1,11 @@
 from django.contrib import admin
-from article.models import Article, Category, Tag
+from article.models import Article, Category, Tag, Avatar
 
 @admin.register(Article)
 class ArticleModelAdmin(admin.ModelAdmin):
     # Use __all__ to display all fields of the model in the list view
     model = Article
-    list_display = ["author", "title","body", "created", "updated", "category", "display_tags"]
+    list_display = ["author", "title","body", "created", "updated", "category", "display_tags", "avatar"]
     filter_horizontal = ('tags',)
 
     # 自定义方法，用于显示文章的标签
@@ -23,6 +23,11 @@ class TagModelAdmin(admin.ModelAdmin):
 class TagModelAdmin(admin.ModelAdmin):
     # Use __all__ to display all fields of the model in the list view
     list_display = ['text']
+
+@admin.register(Avatar)
+class AvatarModelAdmin(admin.ModelAdmin):
+    # Use __all__ to display all fields of the model in the list view
+    list_display = ['content']
 
 # admin.site.register(ArticleModelAdmin)
 # admin.site.register(Category)

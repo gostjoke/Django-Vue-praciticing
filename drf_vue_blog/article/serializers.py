@@ -128,3 +128,67 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
             'articles',
         ]
 
+
+from article.models import Avatar
+
+class AvatarSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='avatar-detail')
+
+    class Meta:
+        model = Avatar
+        fields = '__all__'
+
+
+# 将已有的 ArticleSerializer 里的东西全部挪到这个 ArticleBaseSerializer 里来
+# 除了 Meta 类保留
+class ArticleBaseSerializer(serializers.HyperlinkedModelSerializer):
+    author = UserDescSerializer(read_only=True)
+    category = CategorySerializer(read_only = True)
+    category_id = serializers.IntegerField(write_only=True, allow_null=True, required=False)
+    # tag 字段
+    tags = serializers.SlugRelatedField(
+        queryset=Tag.objects.all(),
+        many=True,
+        required=False,
+        slug_field='text'
+    )
+
+    def to_internal_value(self, data):
+        tags_data = data.get('tags')
+
+        if isinstance(tags_data):
+            for text in tags_data:
+                if not Tag.objects.filter(text=text).exists():
+                    Tag.objects.create(text=text)
+            
+        return super().to_internal_value(data)
+
+    def validate_category_id(self, value):
+        if not Category.objects.filter(id=value).exists() and value is not None:
+            raise serializers.ValidationError("Category with id {} not exists.".format(value))
+        return value            
+
+
+# 保留 Meta 类
+# 将父类改为 ArticleBaseSerializer
+class ArticleSerializer2(ArticleBaseSerializer):
+    class Meta:
+        model = Article
+        fields = '__all__'
+        extra_kwargs = {'body': {'write_only': True}}
+
+class ArticleDetailSerializer2(ArticleBaseSerializer):
+    # 渲染后的正文
+    body_html = serializers.SerializerMethodField()
+    # 渲染后的目录
+    toc_html = serializers.SerializerMethodField()
+
+    def get_body_html(self, obj):
+        return obj.get_md()[0]
+
+    def get_toc_html(self, obj):
+        return obj.get_md()[1]
+
+    class Meta:
+        model = Article
+        fields = '__all__'

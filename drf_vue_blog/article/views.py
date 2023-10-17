@@ -164,7 +164,7 @@ class ArticleViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
     # def get_serializer_class(self):
-    ### 對應到不同的權限
+    # ## 對應到不同的權限
     #     if self.action == 'list':
     #         return SomeSerializer
     #     else:
@@ -203,4 +203,10 @@ class TagViewSet(viewsets.ModelViewSet):
     serializer_class = TagSerializer
     permission_classes = [IsAdminUserOrReadOnly]
 
+from article.models import Avatar
+from article.serializers import AvatarSerializer
 
+class AvatarViewSet(viewsets.ModelViewSet):
+    queryset = Avatar.objects.all()
+    serializer_class = AvatarSerializer
+    permission_classes = [IsAdminUserOrReadOnly]
