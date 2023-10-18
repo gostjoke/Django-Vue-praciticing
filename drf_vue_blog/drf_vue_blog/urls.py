@@ -27,12 +27,14 @@ from rest_framework.routers import DefaultRouter
 from article import views
 from django.conf import settings
 from django.conf.urls.static import static
+from comment.views import CommentViewSet
 
 router = DefaultRouter()
 router.register(r'article', views.ArticleViewSet)
 router.register(r'category', views.CategoryViewSet)
 router.register(r'tag', views.TagViewSet)
 router.register(r'avater', views.AvatarViewSet)
+router.register(r'comment', CommentViewSet)
 
 
 urlpatterns = [

@@ -44,13 +44,19 @@ class ArticleListSerializer(serializers.ModelSerializer):
             # "title",
             # "created",
         ]
+from comment.serializers import CommentSerializer
 
-class ArticleDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Article
-        fields = '__all__'
-        # 此时在接收 POST 请求时，序列化器就不再理会请求中附带的 author 数据了：
-        read_only_fields = ['author']
+
+# class ArticleDetailSerializer(serializers.ModelSerializer):
+
+#     id = serializers.IntegerField(read_only=True)
+#     comments = CommentSerializer(many=True, read_only=True)
+
+#     class Meta:
+#         model = Article
+#         fields = '__all__'
+#         # 此时在接收 POST 请求时，序列化器就不再理会请求中附带的 author 数据了：
+#         read_only_fields = ['author']
 
 ### 新增Category
 class CategorySerializer(serializers.ModelSerializer):
@@ -66,6 +72,7 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Tag
         fields = '__all__'
+
 
 class ArticleSerializer(serializers.HyperlinkedModelSerializer):
     author = UserDescSerializer(read_only=True)
@@ -177,8 +184,10 @@ class ArticleSerializer2(ArticleBaseSerializer):
         fields = '__all__'
         extra_kwargs = {'body': {'write_only': True}}
 
-class ArticleDetailSerializer2(ArticleBaseSerializer):
+class ArticleDetailSerializer(ArticleBaseSerializer):
     # 渲染后的正文
+    id = serializers.IntegerField(read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
     body_html = serializers.SerializerMethodField()
     # 渲染后的目录
     toc_html = serializers.SerializerMethodField()
