@@ -16,4 +16,4 @@ class CommentViewSet(viewsets.ModelViewSet):
 # without permission
 # http POST http://127.0.0.1:8000/api/comment/ article=6 content="New comment by Obama"
 # with
-# http -a will:123  POST http://127.0.0.1:8000/api/comment/ article=1 content="New comment by Obama"
+# http -a will:123  POST http://127.0.0.1:8000/api/comment/ parent_id=2 article_id=5 content="doggy"     

@@ -21,6 +21,15 @@ class Comment(models.Model):
     created = models.DateTimeField(
         default = timezone.now
     )
+    # one comment only can have a parent but parent can have many children
+    parent = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        on_delete = models.CASCADE,
+        related_name = 'children'
+
+    )
 
     class Meta:
         ordering = ['-created',]

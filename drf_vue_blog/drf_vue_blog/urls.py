@@ -29,6 +29,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 from comment.views import CommentViewSet
 
+from rest_framework_simplejwt.views import (
+  TokenObtainPairView,
+  TokenRefreshView,
+)
+
 router = DefaultRouter()
 router.register(r'article', views.ArticleViewSet)
 router.register(r'category', views.CategoryViewSet)
@@ -40,8 +45,12 @@ router.register(r'comment', CommentViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     # drf 自动注册路由
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
+    ### TOKEN GET AND REFRESH
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name="token_refresh")
 ]
+# http post http://127.0.0.1:8000/api/token/ username=will password=123
 
 # 把媒体文件的路由注册了
 if settings.DEBUG:

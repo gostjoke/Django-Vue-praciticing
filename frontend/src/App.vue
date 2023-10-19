@@ -18,7 +18,7 @@ export default{
     }
   }, 
   mounted(){
-    axios.get('/api/article').then(response => (this.info = response.data)
+    axios.get('/api/article/').then(response => (this.info = response.data)
     )
   }
 }
