@@ -3,6 +3,7 @@ from rest_framework import serializers
 from comment.models import Comment
 from user_info.serializers import UserDescSerializer
 
+
 class CommentChildrenSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='comment-detail')
     author = UserDescSerializer(read_only=True)
