@@ -1,40 +1,31 @@
 <!--   frontend/src/App.vue   -->
 
 <template>
-  <div v-for="article in info.results" v-bind:key="article.url" id="articles">
-      <div class="article-title">
-          {{ article.title }}
-      </div>
-  </div>
+
+  <BlogHeader/>
+
+  <ArticleList/>
+
+  <BlogFooter/>
+
 </template>
 
 <script>
-import axios from 'axios';
-export default{
-  name:'App',
-  data: function(){
-    return {
-      info:''
-    }
-  }, 
-  mounted(){
-    axios.get('/api/article/').then(response => (this.info = response.data)
-    )
+  import BlogHeader from './components/BlogHeader.vue'
+  import BlogFooter from './components/BlogFooter.vue'
+  import ArticleList from './components/ArticleList.vue'
+
+  export default {
+    name: 'App',
+    components: { BlogHeader, BlogFooter, ArticleList}
   }
-}
 
 </script>
 
 <style>
-  #article{
-    padding:10px
-  }
-
-  .article-title {
-    font-size:large;
-    font-weight:bolder;
-    color: black;
-    text-decoration: none;
-    padding: 5px 0 5px 0;
+  #app{
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    margin-left: 40px;
+    margin-right: 40px;
   }
 </style>
