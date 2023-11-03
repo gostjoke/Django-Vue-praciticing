@@ -149,6 +149,7 @@ class AvatarSerializer(serializers.ModelSerializer):
 # 将已有的 ArticleSerializer 里的东西全部挪到这个 ArticleBaseSerializer 里来
 # 除了 Meta 类保留
 class ArticleBaseSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.IntegerField(read_only=True)
     author = UserDescSerializer(read_only=True)
     category = CategorySerializer(read_only = True)
     category_id = serializers.IntegerField(write_only=True, allow_null=True, required=False)

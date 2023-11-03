@@ -5,7 +5,7 @@ from article.models import Article, Category, Tag, Avatar
 class ArticleModelAdmin(admin.ModelAdmin):
     # Use __all__ to display all fields of the model in the list view
     model = Article
-    list_display = ["author", "title","body", "created", "updated", "category", "display_tags", "avatar"]
+    list_display = ["id","author", "title","body", "created", "updated", "category", "display_tags", "avatar"]
     filter_horizontal = ('tags',)
 
     # 自定义方法，用于显示文章的标签

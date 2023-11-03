@@ -11,9 +11,15 @@
                 {{ tag }}
             </span>
         </div>
-        <div class="article-title">
+        <!-- <div class="article-title">
             {{ article.title }}
-        </div>
+        </div> -->
+        <router-link
+            :to="{ name:'ArticleDetail', params: { id: article.id} }"
+            class = "article-title"
+        >    
+            {{ article.title }}
+        </router-link>
         <div>{{ formatted_time(article.created) }}</div>
     </div>
 
